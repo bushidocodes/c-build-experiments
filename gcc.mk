@@ -5,9 +5,10 @@ AS = as
 include common.mk
 
 # Compile preprocessed C source code into native assembly
-.PRECIOUS: %.S 
+# -fPIC is required for objects that will be linked into shared libraries
+.PRECIOUS: %.S
 %.S: %.i
-	$(CC) -S -o $@ $<
+	$(CC) -S -fPIC -o $@ $<
 
 # Assemble native assembly into native ELF object files
 %.o: %.S

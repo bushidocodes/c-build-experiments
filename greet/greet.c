@@ -1,5 +1,6 @@
 #include "count.h"
 #include "greet.h"
+#include <stdio.h>
 #include <string.h>
 
 int greet(const char *name)

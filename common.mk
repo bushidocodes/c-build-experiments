@@ -10,4 +10,4 @@ clean:
 # Expands to C source code after the preprocessor runs to completion 
 .PRECIOUS: %.i 
 %.i: %.c
-	$(CC) -E -o $@ $<
+	$(CC) $(CFLAGS) -E -o $@ $<
