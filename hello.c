@@ -1,6 +1,7 @@
+#include <stdio.h>
 #include "greet/greet.h"
 
-int main(int argc, char *argv[argc])
+int main(int argc, char *argv[])
 {
 	if (argc < 2)
 	{

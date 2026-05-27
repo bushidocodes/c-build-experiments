@@ -1,1 +1,1 @@
-void print_count();
+void print_count(void);

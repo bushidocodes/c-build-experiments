@@ -16,15 +16,14 @@ The default `Makefile` uses `gcc.mk`.
 
 `gcc.mk` uses gcc and is configured to use separate preprocess, compile, assemble, and link steps, keeping all intermediate assets to allow for inspection using various tools. It also includes rules to demonstrate the creation and use of static libraries (`*.a` archives) and dynamic libraries (`*.so`). This is a good baseline for understanding the traditional UNIX compiler toolchain.
 
-`clang.mk` adds LLVM-specific build steps that generate LLVM's intermediate representation in text *.ll and binary *.bc forms. It also provides rules to show how to build static LLVM bitcode libraries using two alternate techniques. The first combines all translation units into a single `*.bc` file. The second creates an LLVM bitcode archive that can be linked directly or indirectly just as with archives containing native ELF object files.
+`clang.mk` adds LLVM-specific build steps that generate LLVM's intermediate representation in text *.ll and binary *.bc forms. It also provides rules to show how to build static LLVM bitcode libraries using two alternate techniques. The first combines all translation units into a single `*.bc` file. The second creates an LLVM bitcode archive that can be linked directly or indirectly just as with archives containing native ELF object files. On Debian/Ubuntu, LLVM tools are versioned — pass `LLVM_VERSION=18` (or your installed version) to `make` if the unversioned names are not on your PATH.
 
-`wasm.mk` uses LLVM to generate WebAssembly modules using WASI. The `install_wasi_sdk.sh` script should be executed before running these rules. The rules demonstrates use of LLVM library using `*.bc` files and LLVM Bitcode Archives.
+`wasm.mk` uses LLVM to generate WebAssembly modules using WASI. Run `install_wasi_sdk.sh` first to download WASI SDK 33 into the repo directory. All LLVM tools (llvm-as, llc, llvm-link, llvm-ar) are sourced from the SDK bundle to avoid version mismatches with the host system. The rules demonstrate use of LLVM bitcode libraries (`*.bc` files) and LLVM Bitcode Archives.
 
-The resulting WebAsssembly module was run against [wasmtime](https://github.com/bytecodealliance/wasmtime)
+The resulting WebAssembly module can be run with [wasmtime](https://github.com/bytecodealliance/wasmtime):
 
-Example:
 ```
-make clean && make -r -f wasm.mk link && wasmtime hello.wasm -- Sean
+make clean && make -r -f wasm.mk link && wasmtime run hello.wasm Sean
 ```
 
 ## Tools to inspect various intermediate files
