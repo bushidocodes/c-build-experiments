@@ -1,11 +1,15 @@
-WASI_SDK_PATH = ./wasi-sdk-24.0
+WASI_SDK_PATH = ./wasi-sdk-33.0
 SYSROOT       = $(WASI_SDK_PATH)/share/wasi-sysroot
 CC            = $(WASI_SDK_PATH)/bin/clang --sysroot=$(SYSROOT)
 AR            = $(WASI_SDK_PATH)/bin/llvm-ar
-LLVM_AS       = $(WASI_SDK_PATH)/bin/llvm-as
-LLC           = $(WASI_SDK_PATH)/bin/llc
-LLVM_LINK     = $(WASI_SDK_PATH)/bin/llvm-link
-LIB_BC_OBJS   = greet/count.bc greet/greet.bc
+
+# WASI SDK 33 does not bundle llvm-link; combining bitcode requires a compatible
+# system install. Set LLVM_VERSION to match the SDK's LLVM (e.g. LLVM_VERSION=22).
+LLVM_VERSION ?=
+LLVM_SUFFIX  = $(if $(LLVM_VERSION),-$(LLVM_VERSION),)
+LLVM_LINK    = llvm-link$(LLVM_SUFFIX)
+
+LIB_BC_OBJS = greet/count.bc greet/greet.bc
 
 include common.mk
 
@@ -13,15 +17,15 @@ include common.mk
 %.ll: %.i
 	$(CC) -S -emit-llvm -o $@ $<
 
-# Generate llvm bitcode from the text representation
+# Convert LLVM IR text to bitcode via clang (llvm-as is not bundled in WASI SDK 33)
 .PRECIOUS: %.bc
 %.bc: %.ll
-	$(LLVM_AS) -o $@ $<
+	$(CC) -x ir -emit-llvm -c -o $@ $<
 
-# Assemble into WebAssembly object file
+# Compile bitcode to a WebAssembly object file
 .PRECIOUS: %.o
 %.o: %.bc
-	$(LLC) -march=wasm32 -filetype=obj -o $@ $<
+	$(CC) -c -o $@ $<
 
 # Link WebAssembly object files into a module
 link: $(OBJS)
