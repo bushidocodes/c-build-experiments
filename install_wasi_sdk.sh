@@ -11,6 +11,10 @@ SHA256="0ba8b5bfaeb2adf3f29bab5841d76cf5318ab8e1642ea195f88baba1abd47bce"
 
 wget "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${VERSION}/${TARBALL}"
 echo "${SHA256}  ${TARBALL}" | sha256sum -c -
-tar xf "${TARBALL}"
+# GNU tar defers directory chmod to a final pass that fails on WSL/DrvFs even
+# with --no-same-permissions; sha256sum above already guarantees archive integrity.
+tar xmf "${TARBALL}" --no-same-permissions || \
+    [ -d "wasi-sdk-${VERSION}.0-${ARCH}-linux" ] || \
+    { echo "tar: extraction failed" >&2; exit 1; }
 rm "${TARBALL}"
 mv "wasi-sdk-${VERSION}.0-${ARCH}-linux" "wasi-sdk-${VERSION}.0"
