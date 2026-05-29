@@ -1,0 +1,10 @@
+# Force Unix line endings for files that must not have CRLF
+.gitattributes text eol=lf
+*.sh text eol=lf
+Makefile text eol=lf
+*.mk text eol=lf
+
+# Standard text files — normalize on checkin, use platform endings on checkout
+*.c text
+*.h text
+*.md text
