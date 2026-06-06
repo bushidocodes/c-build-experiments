@@ -46,4 +46,4 @@ Shared libraries are dynamic. In Linux, these are `*.so` files. They contain con
 
 For example, using `-lm` with `gcc` without using `-static` results in `libmath` being linked dynamically at runtime
 
-The `ldd` program is responsible for dynamically linking shared libraries at runtime. In ELF executables, this is accomplished by listing `ldd` in the interpreter field.
+In ELF executables, the dynamic linker/loader (`ld.so`, e.g. `ld-linux-x86-64.so.2`) is listed in the `PT_INTERP` segment. The kernel transfers control to this loader at program startup; the loader resolves and loads required shared libraries before jumping to `main()`. The separate `ldd` utility displays which shared libraries an executable depends on, but does not itself perform the linking.
