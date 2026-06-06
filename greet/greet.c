@@ -5,7 +5,9 @@
 
 int greet(const char *name)
 {
-    for (int i = 0; i < strlen(name); i++)
+    size_t len = strlen(name);
+    for (size_t i = 0; i < len; i++)
         print_count();
-    return printf("Hello, %s!\n", name);
+    int result = printf("Hello, %s!\n", name);
+    return (result < 0) ? result : 0;
 }
