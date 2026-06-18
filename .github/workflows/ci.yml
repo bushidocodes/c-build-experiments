@@ -4,7 +4,7 @@ jobs:
   gcc:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: gcc canonical pipeline
         run: make -r -f gcc.mk clean && make -r -f gcc.mk link && ./hello
       - name: gcc static archive
@@ -15,7 +15,7 @@ jobs:
   clang:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install LLVM
         run: sudo apt-get install -y clang llvm
       - name: clang/LLVM-IR pipeline
@@ -28,7 +28,7 @@ jobs:
   wasi:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install WASI SDK
         run: bash install_wasi_sdk.sh
       - name: WASI/WebAssembly pipeline
