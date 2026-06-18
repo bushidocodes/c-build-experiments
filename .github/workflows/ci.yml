@@ -1,0 +1,35 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  gcc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: gcc canonical pipeline
+        run: make -r -f gcc.mk clean && make -r -f gcc.mk link && ./hello
+      - name: gcc static archive
+        run: make -r -f gcc.mk clean && make -r -f gcc.mk link_libgreet_a_direct && ./hello
+      - name: gcc shared library
+        run: make -r -f gcc.mk clean && make -r -f gcc.mk hello_so
+
+  clang:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install LLVM
+        run: sudo apt-get install -y clang llvm
+      - name: clang/LLVM-IR pipeline
+        run: |
+          LLVM_VER=$(llvm-config --version | cut -d. -f1)
+          make -r -f clang.mk LLVM_VERSION=$LLVM_VER clean
+          make -r -f clang.mk LLVM_VERSION=$LLVM_VER link
+          ./hello
+
+  wasi:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install WASI SDK
+        run: bash install_wasi_sdk.sh
+      - name: WASI/WebAssembly pipeline
+        run: make -r -f wasm.mk clean && make -r -f wasm.mk link
